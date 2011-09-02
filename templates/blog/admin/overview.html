@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div id="Main">
+	<div id="Nav">V2blog Backend</div>
+	<div id="Operations"><div id="Quickfind"><form method="post" action="/writer/quick/find">Quick Find <input type="text" class="qf" name="qf" id="qf" /></form>
+	</div><a class="super normal button" id="writeNew" href="/admin/write">Write a New Article</a></div>
+	<table cellpadding="0" cellspacing="0" border="0" width="100%" class="data">
+		<tr>
+			<th width="20"></td>
+			<th width="auto">Title</td>
+			<th width="100">Category</td>
+			<th width="100">Created</td>
+			<th width="100">Last Modified</td>
+			<th width="30">Hits</td>
+		</tr>
+		{% set i = 0 %}
+		{% for article in articles %}
+		<tr>
+			<td class="{% if i%2 %}alt{% end %}"></td>
+			<td class="{% if i%2 %}alt{% end %}">
+			    <a href="/admin/edit/{{ article.id }}" class="dark">{% if article.title %}{{ article.title }}{% else %}Untitled{% end %}</a>
+			    <a href="/blog/{{ article.slug }}" target="_blank">&nbsp;»&nbsp;</a>
+			    {% if article.is_page %}
+			        <div class="blue_badge">PAGE</div>
+			        {% if article.is_for_sidebar %} {% else %}<div class="graphite_badge">ISOLATED</div>{% end %}
+			    {% end %}
+			    <div class="op"><a href="#;" onclick="if (confirm('Are you sure?')) { location.href = '/admin/remove/{{ article.id }}';}">Delete</a></div>
+			</td>
+			<td class="{% if i%2 %}alt{% end %}">{{ article.category }}</td>
+			<td class="{% if i%2 %}alt{% end %}">{{ locale.format_date(article.published, full_format=True, shorter=True) }}</td>
+			<td class="dt {% if i%2 %}alt{% end %}">{{ locale.format_date(article.updated, full_format=True, shorter=True) }}</td>
+			<td class="{% if i%2 %}alt{% end %}" align="right">{{ article.hits }}{% if article.hits_feed > 0 %}+{{ article.hits_feed }}{% end %}</td>
+		</tr>
+		{% set i += 1 %}
+		{% end %}
+		
+		{% if not articles %}
+		<tr>
+			<td class="alt" colspan="5"><div align="center" style="padding: 20px 0px 20px 0px;">No article. <a href="/admin/write">Write one</a> now?</div></td>
+		</tr>
+		{% end %}
+	</table>
+	</div>
+	<div class="c"></div>
+</div>
+{% end %}

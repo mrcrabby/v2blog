@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8" />
+	<title>{% if page_title %}Project Picky › Writer › {{ page_title }}{% else %}Project Picky › Writer{% end %}</title>
+	<link rel="stylesheet" type="text/css" media="screen"  href="/static/blog/admin/style.css" />
+</head>
+<body>
+<div id="Top"><div class="tr"><img src="/static/blog/shared/web.png" align="absmiddle" /> <a href="/" class="white" target="_blank">Visit Site</a></div>
+	<a href="/writer/overview" class="white">V2blog Writer</a> &nbsp; <img src="/static/blog/shared/settings.png" align="absmiddle" />&nbsp;<a href="/writer/settings" class="white">Settings</a>
+</div>
+{% block body %}{% end %}
+
+<div id="Footer">
+    {% if current_user %}
+     <div id="Reminder"><a href="/auth/logout">Sign Out</a></div>
+    {% else %}
+    <div id="Reminder">{{ _('<a href="%(url)s">Sign in</a> to compose/edit') % {"url": "/auth/login?next=" + url_escape(request.uri)} }}</div>
+    {% end %}
+	<div id="Powered">
+		Powered by <a href="#" target="_blank">V2blog</a> v{{ system_version }} <br />
+		&copy; 2009 v2team
+	</div>
+</div>
+</body>
+</html>

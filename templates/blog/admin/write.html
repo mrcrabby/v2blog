@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div id="Main">
+	<div id="Nav"><a href="/admin/overview?page={{ page }}">V2blog Backend</a> &nbsp;›&nbsp; {% if page_mode == 'new' %}New Article{% end %}{% if page_mode == 'edit' %}Edit Article &nbsp;›&nbsp; {{ article.slug }}{% end %}</div>
+	{% if message %}
+	<div id="Message"><img src="/static/blog/shared/minus.png" align="absmiddle" class="ico16" /> {{ message }}</div>
+	{% end %}
+	<div id="Composing">
+    <form method="post" action="" name="formWrite">
+    {{ xsrf_form_html() }}
+	{% if page_mode == 'edit' %}
+	<small class="fade">The article you're editing is created on {{ article.published.strftime('%Y-%m-%d %H:%M') }}, has {{ article.hits }} hits.<br /><a href="/blog/{{ article.slug }}" target="_blank">Open in a new tab  »&nbsp;</a></small>
+	<br /><br />
+	{% end %}
+	Title<br />
+	<input type="text" class="sl" name="title" value="{% if article and article.title %}{{ article.title }}{% end %}" />
+	<br /><br />
+	Title Link<br />
+	<input type="text" class="sl" name="title_link" value="{% if article and article.title_link %}{{ article.title_link }}{% end %}" />
+	<br /><br />
+	Parent URL<br />
+	<input type="text" class="sl" name="parent_url" value="{% if article and article.parent_url %}{{ article.parent_url }}{% end %}" />
+	<br /><br />
+	{% if message %}
+	<strong>Content <span class="snow">Required</span></strong>
+	{% else %}
+	Content
+	{% end %}
+	<br />
+	<textarea class="ml" name="content">{% if article and article.text %}{{ article.text }}{% end %}</textarea>
+	<br /><br />
+	Category
+	<select name="category" id="category" size="1">
+	   {% for category in categories %}
+	   <option value="{{ category[0] }}" {% if article and category[0] == article.category %}selected{% end %}>{{ category[1] }}</option>
+	   {% end %}
+	</select>
+	
+	Format
+	{% if page_mode == 'new' %}
+	<select name="format">
+		<option value="html">HTML</option>
+		<option value="markdown" selected="selected">Markdown</option>
+		<option value="txt">Plain Text</option>
+	</select>
+	{% else %}
+	<select name="format">
+		{% if article.format == 'html' %}
+		<option value="html" selected="selected">HTML</option>
+		{% else %}
+		<option value="html">HTML</option>
+		{% end %}
+		{% if article.format == 'markdown' %}
+		<option value="markdown" selected="selected">Markdown</option>
+		{% else %}
+		<option value="markdown">Markdown</option>
+		{% end %}
+		{% if article.format == 'text' %}
+		<option value="text" selected="selected">Plain Text</option>
+		{% else %}
+		<option value="txt">Plain Text</option>
+		{% end %}
+	</select>
+	{% end %}
+
+	<small>Is Page: {% if article and article.is_page %}
+	<select name="is_page"><option value="True" selected="selected">Yes</option><option value="False">No</option></select>
+	{% else %}
+	<select name="is_page"><option value="True">Yes</option><option value="False" selected="selected">No</option></select>
+	{% end %}</small>
+
+	<small>Is for Sidebar: {% if article and article.is_for_sidebar %}
+	<select name="is_for_sidebar"><option value="True" selected="selected">Yes</option><option value="False">No</option></select>
+	{% else %}
+	<select name="is_for_sidebar"><option value="True">Yes</option><option value="False" selected="selected">No</option></select>
+	{% end %}</small>
+	<br /><br />
+	<a class="super normal button" id="doSubmit" href="javascript:document.formWrite.submit()">Save</a>&nbsp;&nbsp;{% if page_mode == 'edit' %}<a class="super normal button" id="doDelete" href="#;" onclick="if (confirm('Are you sure?')) { location.href = '/admin/remove/{{ article.slug }}';}">Delete</a>{% else %}<a class="super normal button" id="doDiscard" href="/admin?page={{ page }}">Discard</a>{% end %}
+	</form>
+	</div>
+	<div id="Explaination">
+		<strong>COMPOSING TIPS</strong>
+		<div class="sep20"></div>
+		<big>TITLE LINK</big> › For pointing to an external URL you want to share with your readers. When readers click TITLE, they will be redirected to TITLE LINK. You can leave this field alone.
+		<div class="sep20"></div>
+		<big>TITLE URL</big> › This is part of permalink, for example if your site URL is example.com then TITLE URL is used in <big>example.com/title-url</big> , you can have anything here, but - (hyphens) are recommended for replacing spaces in URL.
+		<div class="sep20"></div>
+		<big>PARENT URL</big> › You can put another article's TITLE URL here, then you'll create a hierarchy-like relationship for them.
+		<div class="sep20"></div>
+		<big>SET</big> › If you want this article appears in other articles' Related Articles section, you can use same SET to get them organized. Currently articles can be related with ONLY ONE set.
+	</div>
+	<div class="c"></div>
+</div>
+{% end %}
